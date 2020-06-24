@@ -1,0 +1,2 @@
+# .clojure
+~/.clojure folder
