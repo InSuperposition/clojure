@@ -6,8 +6,13 @@
            ;; compiles Clojure code to native byte code using GraalVM and its native-image utlity
            ;; to learn more: https://www.graalvm.org/docs/reference-manual/native-image/
            :build-exe
-           {:main-opts ["-m clj.native-image my-ns.native-image"
-                        "--initialize-at-build-time"]
+           {:main-opts ["-m clj.native-image core"
+                        ;; "--initialize-at-build-time"
+                        "--verbose"
+                        ;; "--enable-https"
+                        "--no-fallback"
+                        ;; "--language:python"
+                        "--report-unsupported-elements-at-runtime"]
             :jvm-opts ["-Dclojure.compiler.direct-linking=true"]}
            ;; Build Jar
            :build-jar
@@ -103,10 +108,10 @@
         clj-kondo {:mvn/version "2020.06.21"}
         com.bhauman/rebel-readline {:mvn/version "0.1.4"}
         jonase/eastwood {:mvn/version "0.3.11"}
-        olical/depot {:mvn/version "1.8.4"}
+        olical/depot {:mvn/version "2.0.1"}
         org.clojure/spec.alpha {:mvn/version "0.2.187"}
         org.clojure/spec-alpha2 {:git/url "https://github.com/clojure/spec-alpha2"
-                                 :sha     "30fb655c86db2cfb977ffcd2bcbb44370ac29d41"}
+                                 :sha     "2f84e3a37cab76d44c58785ff4481597429bc1d3"}
         org.clojure/tools.namespace {:mvn/version "1.0.0"}
         seancorfield/clj-new {:mvn/version "1.0.199"}
         seancorfield/depstar {:mvn/version "1.0.94"}
