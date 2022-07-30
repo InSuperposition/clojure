@@ -13,34 +13,40 @@
                         "--no-fallback"
                         ;; "--language:python"
                         "--report-unsupported-elements-at-runtime"]
+            :extra-deps {taylorwood/clj.native-image {:git/url "https://github.com/taylorwood/clj.native-image.git"
+                                           :sha "602587dfb5243ea8c72ed3e967c37c1f9d611723"}}
             :jvm-opts ["-Dclojure.compiler.direct-linking=true"]}
            ;; Build Jar
            :build-jar
-           {:main-opts  ["-m" "hf.depstar.jar"]}
+           {:main-opts  ["-m" "hf.depstar.jar"]
+            :extra-deps {seancorfield/depstar {:mvn/version "1.0.94"}}}
            ;; Build Uberjar
            :build-uberjar
-           {:main-opts  ["-m" "hf.depstar.uberjar"]}
+           {:main-opts  ["-m" "hf.depstar.uberjar"]
+            :extra-deps {seancorfield/depstar {:mvn/version "1.0.94"}}}
 
            ;; Dependency tools
            ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
            ;; Check for outdated dependencies
            :deps-outdated
-           {:main-opts  ["-m" "depot.outdated.main"]}
+           {:main-opts  ["-m" "depot.outdated.main"]
+            :extra-deps {olical/depot {:mvn/version "2.2.0"}}}
            ;; Update outdated dependencies
            :deps-update
            {:main-opts  ["-m" "depot.outdated.main"
-                         "--update"]}
+                         "--update"]
+            :extra-deps {olical/depot {:mvn/version "2.2.0"}}}
 
 
 
-          ;; Generate SVG image of dependency graph in directory called `graphs`
+          ;; Generate SVG image of dependency graph in directory called `target`
            :deps-graph
            {:extra-deps {thomasa/morpheus
                          {:git/url "https://github.com/benedekfazekas/morpheus.git"
                           :sha     "d3decebc1cb9ef697cd34781f9cf83d44a071e85"}}
             :main-opts  ["-m" "thomasa.morpheus.main"
-                         "-d"  "graphs"
+                         "-d"  "target"
                          "-f" "svg"
                          "src" "test"]}
 
@@ -51,21 +57,22 @@
            ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
            ;;
-           :lint-kondo
-           {:main-opts  ["-m" "clj-kondo.main"]}
+           :lint-kondo {:main-opts  ["-m" "clj-kondo.main"]
+                        :extra-deps {clj-kondo/clj-kondo {:mvn/version "2020.06.21"}}}
            ;;
-           :lint-eastwood
-           {:main-opts  ["-m" "eastwood.lint" {:source-paths ["src"]}]}
+           :lint-eastwood {:main-opts  ["-m" "eastwood.lint" {:source-paths ["src"]}]
+                           :extra-deps {jonase/eastwood {:mvn/version "0.3.11"}}}
            ;;
-           :lint-kibit
-           {:main-opts  ["-m" "kibit-runner.cmdline"]}
+           :lint-kibit {:main-opts  ["-m" "kibit-runner.cmdline"] 
+                        :extra-deps {tvaughan/kibit-runner {:mvn/version "1.0.1"}}}
 
            ;; Scaffold tools
            ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
            ;; New project or library
-           :new
-           {:main-opts ["-m" "clj-new.create"]}
+           :new {:extra-deps {com.github.seancorfield/clj-new {:mvn/version "1.2.399"}}
+                 :exec-fn clj-new/create
+                 :exec-args {:template "app"}}
 
 
            ;; REPL tools
@@ -73,20 +80,13 @@
 
            ;; rebel-readline for Clojure
            :rebel
-           {:main-opts  ["-m" "rebel-readline.main"]}
+           {:main-opts  ["-e" "(require,'[clojure.tools.namespace.repl,:refer,[refresh]])(refresh)"
+                         "-m" "rebel-readline.main"]
+            :extra-deps {com.bhauman/rebel-readline {:mvn/version "0.1.4"}}}
            ;; rebel-readline for ClojureScript
            :rebel-cljs
-           {:main-opts  ["-m" "rebel-readline-cljs.main"]}
-
-           ;; Test tools
-           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-           ;; clojure.spec.alpha
-           :spec
-           {}
-           ;; clojure.spec.alpha2
-           :spec2
-           {}
+           {:main-opts  ["-m" "rebel-readline-cljs.main"]
+            :extra-deps {com.bhauman/rebel-readline {:mvn/version "0.1.4"}}}
 
            ;; Performance tools
            ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -101,18 +101,6 @@
            ;; (quick-bench (project-function args))
 
            :benchmark
-           {:extra-deps {criterium {:mvn/version "0.4.5"}}}}
+           {:extra-deps {hugoduncan/criterium {:mvn/version "0.4.6"}}}}
 
- :deps {clj.native-image {:git/url "https://github.com/taylorwood/clj.native-image.git"
-                          :sha "602587dfb5243ea8c72ed3e967c37c1f9d611723"}
-        clj-kondo {:mvn/version "2020.06.21"}
-        com.bhauman/rebel-readline {:mvn/version "0.1.4"}
-        jonase/eastwood {:mvn/version "0.3.11"}
-        olical/depot {:mvn/version "2.0.1"}
-        org.clojure/spec.alpha {:mvn/version "0.2.187"}
-        org.clojure/spec-alpha2 {:git/url "https://github.com/clojure/spec-alpha2"
-                                 :sha     "2f84e3a37cab76d44c58785ff4481597429bc1d3"}
-        org.clojure/tools.namespace {:mvn/version "1.0.0"}
-        seancorfield/clj-new {:mvn/version "1.0.199"}
-        seancorfield/depstar {:mvn/version "1.0.94"}
-        tvaughan/kibit-runner {:mvn/version "1.0.1"}}}
+ :deps {org.clojure/tools.namespace {:mvn/version "1.0.0"}}}

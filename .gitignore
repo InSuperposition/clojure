@@ -1,14 +1,3 @@
-pom.xml
-pom.xml.asc
-*.jar
-*.class
-/lib/
-/classes/
-/target/
-/checkouts/
-/.cpcache/
-/.lein-*
-/.nrepl-*
-.hgignore
-.hg/
+.cache/
+.cpcache/
 .rebel_readline_history
