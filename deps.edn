@@ -1,106 +1,45 @@
 
-{:aliases {;; Build tools
-           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+{:aliases {:cider-clj {:extra-deps {org.clojure/clojure {:mvn/version "1.11.1"}
+                                    cider/cider-nrepl {:mvn/version "0.44.0"}}
+                       :main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]"]}
 
-           ;; Build executable file
-           ;; compiles Clojure code to native byte code using GraalVM and its native-image utlity
-           ;; to learn more: https://www.graalvm.org/docs/reference-manual/native-image/
-           :build-exe
-           {:main-opts ["-m clj.native-image core"
-                        ;; "--initialize-at-build-time"
-                        "--verbose"
-                        ;; "--enable-https"
-                        "--no-fallback"
-                        ;; "--language:python"
-                        "--report-unsupported-elements-at-runtime"]
-            :extra-deps {taylorwood/clj.native-image {:git/url "https://github.com/taylorwood/clj.native-image.git"
-                                           :sha "602587dfb5243ea8c72ed3e967c37c1f9d611723"}}
-            :jvm-opts ["-Dclojure.compiler.direct-linking=true"]}
-           ;; Build Jar
-           :build-jar
-           {:main-opts  ["-m" "hf.depstar.jar"]
-            :extra-deps {seancorfield/depstar {:mvn/version "1.0.94"}}}
-           ;; Build Uberjar
-           :build-uberjar
-           {:main-opts  ["-m" "hf.depstar.uberjar"]
-            :extra-deps {seancorfield/depstar {:mvn/version "1.0.94"}}}
+           :cider-cljs {:extra-deps {org.clojure/clojure {:mvn/version "1.11.1"}
+                                     org.clojure/clojurescript {:mvn/version "1.10.339"}
+                                     cider/cider-nrepl {:mvn/version "0.44.0"}
+                                     cider/piggieback {:mvn/version "0.5.2"}}
+                        :main-opts ["-m" "nrepl.cmdline" "--middleware"
 
-           ;; Dependency tools
-           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-           ;; Check for outdated dependencies
-           :deps-outdated
-           {:main-opts  ["-m" "depot.outdated.main"]
-            :extra-deps {olical/depot {:mvn/version "2.2.0"}}}
-           ;; Update outdated dependencies
-           :deps-update
-           {:main-opts  ["-m" "depot.outdated.main"
-                         "--update"]
-            :extra-deps {olical/depot {:mvn/version "2.2.0"}}}
-
-
-
-          ;; Generate SVG image of dependency graph in directory called `target`
+                                    "[cider.nrepl/cider-middleware,cider.piggieback/wrap-cljs-repl]"]}
+           ;; Generate SVG image of dependency graph in directory called `target`
            :deps-graph
-           {:extra-deps {thomasa/morpheus
-                         {:git/url "https://github.com/benedekfazekas/morpheus.git"
-                          :sha     "d3decebc1cb9ef697cd34781f9cf83d44a071e85"}}
-            :main-opts  ["-m" "thomasa.morpheus.main"
-                         "-d"  "target"
-                         "-f" "svg"
-                         "src" "test"]}
+           {:extra-deps {}
+            thomasa/morpheus
+            {:git/url "https://github.com/benedekfazekas/morpheus.git"
+             :git/sha "6d7d8ccc1dd58ef2d4d9c781486303cf1082b899"}
+            :main-opts
+            ["-m" "thomasa.morpheus.main"
+             "-d"  "graphs"
+             "-f" "svg"
+             "src" "test"]}
 
-           ;; Deploy tools
-           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-           ;; Lint tools
-           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-           ;;
-           :lint-kondo {:main-opts  ["-m" "clj-kondo.main"]
-                        :extra-deps {clj-kondo/clj-kondo {:mvn/version "2020.06.21"}}}
-           ;;
-           :lint-eastwood {:main-opts  ["-m" "eastwood.lint" {:source-paths ["src"]}]
-                           :extra-deps {jonase/eastwood {:mvn/version "0.3.11"}}}
-           ;;
-           :lint-kibit {:main-opts  ["-m" "kibit-runner.cmdline"] 
-                        :extra-deps {tvaughan/kibit-runner {:mvn/version "1.0.1"}}}
-
-           ;; Scaffold tools
-           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+           ;; Native Image
+           :native-image
+           {:main-opts ["-m" "clj.native-image" "core"
+                        "--initialize-at-build-time"
+                                   ;; optional native image name override
+                        "-H:Name=core"]
+            :jvm-opts ["-Dclojure.compiler.direct-linking=true"]
+            :extra-deps
+            {clj.native-image/clj.native-image
+             {:git/url "https://github.com/taylorwood/clj.native-image.git"
+              :sha "7708e7fd4572459c81f6a6b8e44c96f41cdd92d4"}}}
 
            ;; New project or library
-           :new {:extra-deps {com.github.seancorfield/clj-new {:mvn/version "1.2.399"}}
+           :new {:extra-deps {com.github.seancorfield/clj-new {:mvn/version "1.2.404"}}
                  :exec-fn clj-new/create
                  :exec-args {:template "app"}}
 
+           :rebel {:extra-deps {com.bhauman/rebel-readline {:mvn/version "0.1.4"}}
+                   :main-opts  ["-m" "rebel-readline.main"]}}
 
-           ;; REPL tools
-           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-           ;; rebel-readline for Clojure
-           :rebel
-           {:main-opts  ["-e" "(require,'[clojure.tools.namespace.repl,:refer,[refresh]])(refresh)"
-                         "-m" "rebel-readline.main"]
-            :extra-deps {com.bhauman/rebel-readline {:mvn/version "0.1.4"}}}
-           ;; rebel-readline for ClojureScript
-           :rebel-cljs
-           {:main-opts  ["-m" "rebel-readline-cljs.main"]
-            :extra-deps {com.bhauman/rebel-readline {:mvn/version "0.1.4"}}}
-
-           ;; Performance tools
-           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-           ;; Benchmarking library for Clojure
-           ;; https://github.com/hugoduncan/criterium/
-           ;; (require '[criterium.core :refer [bench quick-bench]]) ; require criterium
-           ;; (bench (adhoc-expression)) ; timing of a self contained expression
-           ;;
-           ;; (require '[practicalli/namespace-name]) ; require project source code
-           ;; (in-ns 'practicalli/namespace-name)
-           ;; (quick-bench (project-function args))
-
-           :benchmark
-           {:extra-deps {hugoduncan/criterium {:mvn/version "0.4.6"}}}}
-
- :deps {org.clojure/tools.namespace {:mvn/version "1.0.0"}}}
+ :deps {org.clojure/tools.namespace {:mvn/version "1.4.4"}}}

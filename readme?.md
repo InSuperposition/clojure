@@ -15,7 +15,7 @@ Install `clojure`
 Install `GraalVM`'s `native-image` utility. [(documentation)](https://www.graalvm.org/docs/reference-manual/native-image/#install-native-image)
 
 ```shell
-$ gu install native-image
+gu install native-image
 ```
 
 ### Deploy build files
@@ -23,7 +23,7 @@ $ gu install native-image
 Install `maven`
 
 ```shell
-$ brew install maven
+brew install maven
 ```
 
 ### Use Python libraries in Clojure
@@ -42,8 +42,8 @@ Use dependencies in a `clojure` project's `deps.edn` file
 Install Python libraries, in project folder...?
 
 ```shell
-$ pip3 install seaborn
-$ pip3 install matplotlib
+pip3 install seaborn
+pip3 install matplotlib
 ```
 
 Use python libraries... TBD
