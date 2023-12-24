@@ -10,18 +10,32 @@
                         :main-opts ["-m" "nrepl.cmdline" "--middleware"
 
                                     "[cider.nrepl/cider-middleware,cider.piggieback/wrap-cljs-repl]"]}
-           ;; Generate SVG image of dependency graph in directory called `target`
            :deps-graph
+           ;; Generate SVG image of dependency graph in directory called `target`
            {:extra-deps {}
             thomasa/morpheus
             {:git/url "https://github.com/benedekfazekas/morpheus.git"
-             :git/sha "6d7d8ccc1dd58ef2d4d9c781486303cf1082b899"}
+             :git/sha "6d7d8cc"}
             :main-opts
             ["-m" "thomasa.morpheus.main"
              "-d"  "graphs"
              "-f" "svg"
              "src" "test"]}
-
+           :dev
+           {:extra-deps
+            {io.github.djblue/portal
+             {:git/tag "0.25.0" :git/sha "1645d58"}}}
+           ;; REPL-related tools:
+           ;; - start Figwheel and/or Rebel Readline, with a socket REPL:
+           ;;   - clj -M:portal:dev/repl OR clojure -M:rebel:portal:dev/repl
+           ;;   - clojure -M:rebel:dev/repl
+           ;;   - clojure -M:nrepl:dev/repl
+           ;;   - clojure -M:fig:build:dev/repl
+           :dev/repl {:jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
+                      :extra-deps {io.github.seancorfield/dot-clojure
+                                   {:git/tag "v1.0.2"
+                                    :git/sha "6a3f903"}}
+                      :main-opts ["-e" "((requiring-resolve 'org.corfield.dev.repl/start-repl))"]}
            ;; Native Image
            :native-image
            {:main-opts ["-m" "clj.native-image" "core"
@@ -39,7 +53,7 @@
                  :exec-fn clj-new/create
                  :exec-args {:template "app"}}
 
-           :rebel {:extra-deps {com.bhauman/rebel-readline {:mvn/version "0.1.4"}}
+           :rebel {:extra-deps {com.bhauman/rebel-readline {:mvn/version "RELEASE"}}
                    :main-opts  ["-m" "rebel-readline.main"]}}
 
  :deps {org.clojure/tools.namespace {:mvn/version "1.4.4"}}}
