@@ -22,9 +22,7 @@
              "-f" "svg"
              "src" "test"]}
            :dev
-           {:extra-deps
-            {io.github.djblue/portal
-             {:git/tag "0.25.0" :git/sha "1645d58"}}}
+           {io.github.djblue/portal {:mvn/version "0.56.0"}}
            ;; REPL-related tools:
            ;; - start Figwheel and/or Rebel Readline, with a socket REPL:
            ;;   - clj -M:portal:dev/repl OR clojure -M:rebel:portal:dev/repl
